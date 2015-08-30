@@ -1,0 +1,56 @@
+nginx:
+  build: ./nginx/
+  ports:
+    - "80:80"
+  privileged: true
+  links:
+    - phoenix
+  environment:
+    TERM: xterm
+    ADDR: 192.168.10.1
+phoenix:
+  build: ./phoenix/
+  privileged: true
+  links:
+    - master
+    - slave
+  environment:
+    TERM: xterm
+    NAME: rabe
+    ADDR: 192.168.20.1
+    DB_RWUSER: rw
+    DB_RWPASS: pass
+    DB_ROUSER: ro
+    DB_ROPASS: pass
+master:
+  build: ./mariadb/
+  expose:
+    - "3306"
+  privileged: true
+  environment:
+    TERM: xterm
+    IS_MASTER: "true"
+    DB_ROOTPASS: passw0rd
+    DB_RWUSER: rw
+    DB_RWPASS: pass
+    DB_ROUSER: ro
+    DB_ROPASS: pass
+    DB_REPLUSER: repl
+    DB_REPLPASS: repl
+slave:
+  build: ./mariadb/
+  expose:
+    - "3306"
+  privileged: true
+  links:
+    - master
+  environment:
+    TERM: xterm
+    IS_MASTER: "false"
+    DB_ROOTPASS: passw0rd
+    DB_RWUSER: rw
+    DB_RWPASS: pass
+    DB_ROUSER: ro
+    DB_ROPASS: pass
+    DB_REPLUSER: repl
+    DB_REPLPASS: repl

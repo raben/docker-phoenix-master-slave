@@ -1,0 +1,4 @@
+[mysqld]
+#server-id=
+log-bin=bin
+log-slave-updates
