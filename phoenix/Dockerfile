@@ -4,6 +4,7 @@ MAINTAINER rabe_ame rabe.ame@gmail.com
 # リポジトリを追加
 ADD ./configs/etc/yum.repos.d/mariadb.repo /etc/yum.repos.d/mariadb.repo
 
+
 # 必要なパッケージをインストール
 RUN yum update -y
 RUN yum install -y tar wget sudo vim-enhanced git gcc gcc-c++ make zlib-devel openssl openssl-devel ncurses-devel MariaDB-devel MariaDB-client patch
@@ -14,7 +15,6 @@ RUN echo 'docker:password' | chpasswd
 RUN echo 'docker ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/docker
 
 WORKDIR $HOME
-
 # erlang インストール
 RUN wget http://www.erlang.org/download/otp_src_18.0.tar.gz
 RUN tar xvf otp_src_18.0.tar.gz
@@ -23,20 +23,21 @@ RUN rm -rf otp_src_18.0 otp_src_18.0.tar.gz
 RUN echo 'export PATH="$PATH:/usr/local/bin"' >> ~/.bashrc
 
 # nodejs インストール
-RUN wget http://nodejs.org/dist/v0.12.7/node-v0.12.7.tar.gz
-RUN tar xvf node-v0.12.7.tar.gz
-RUN cd node-v0.12.7 && ./configure && make && make install
-RUN rm -rf node-v0.12.7.tar.gz node-v0.12.7
+RUN curl --silent --location https://rpm.nodesource.com/setup_5.x | bash -
+RUN yum -y install nodejs
 
 # elixir インストール
 ENV LANG ja_JP.UTF-8
 RUN git clone https://github.com/elixir-lang/elixir.git
-RUN cd elixir && git checkout -b v1.0.5 && make && make install
+RUN cd elixir && git checkout -b v1.2.2 && make && make install
 RUN cp elixir/rebar /usr/local/bin/
 RUN rm -rf $HOME/elixir
 
 # clean up
 RUN yum clean all
+
+# phoenix.ezを転送
+ADD ./src/phoenix_new-1.1.4.ez /phoenix_new-1.1.4.ez
 
 ADD ./scripts/run.sh /run.sh
 ADD ./scripts/init.sh /init.sh

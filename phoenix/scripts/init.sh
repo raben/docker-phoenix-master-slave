@@ -5,8 +5,8 @@ VOLUME_HOME=$HOME/$NAME
 echo " -> Installation detected in $VOLUME_HOME"
 echo " -> Installing Phoenix Application"
 mix local.hex --force
-mix archive.install https://github.com/phoenixframework/phoenix/releases/download/v1.0.0/phoenix_new-1.0.0.ez --force
-y | mix phoenix.new $VOLUME_HOME --database mysql
+mix archive.install /phoenix_new-1.1.4.ez --force
+yes | mix phoenix.new $VOLUME_HOME --database mysql
 cd $VOLUME_HOME
 npm install
 mix deps.get
