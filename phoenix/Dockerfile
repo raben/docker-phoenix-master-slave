@@ -14,22 +14,23 @@ RUN useradd -m -s /bin/bash docker
 RUN echo 'docker:password' | chpasswd
 RUN echo 'docker ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/docker
 
+ENV HOME /root
 WORKDIR $HOME
 # erlang インストール
-RUN wget http://www.erlang.org/download/otp_src_18.0.tar.gz
-RUN tar xvf otp_src_18.0.tar.gz
-RUN cd otp_src_18.0 && ./configure && make && make install
-RUN rm -rf otp_src_18.0 otp_src_18.0.tar.gz
+RUN wget http://www.erlang.org/download/otp_src_19.1.tar.gz
+RUN tar xvf otp_src_19.1.tar.gz
+RUN cd otp_src_19.1 && ./configure && make && make install
+RUN rm -rf otp_src_19.1 otp_src_19.1.tar.gz
 RUN echo 'export PATH="$PATH:/usr/local/bin"' >> ~/.bashrc
 
 # nodejs インストール
-RUN curl --silent --location https://rpm.nodesource.com/setup_5.x | bash -
+RUN curl --silent --location https://rpm.nodesource.com/setup_6.x | bash -
 RUN yum -y install nodejs
 
 # elixir インストール
 ENV LANG ja_JP.UTF-8
-RUN git clone https://github.com/elixir-lang/elixir.git
-RUN cd elixir && git checkout -b v1.2.2 && make && make install
+RUN git clone --depth 1 https://github.com/elixir-lang/elixir.git
+RUN cd elixir && git checkout -b v1.3.4 && make && make install
 RUN cp elixir/rebar /usr/local/bin/
 RUN rm -rf $HOME/elixir
 
@@ -37,7 +38,7 @@ RUN rm -rf $HOME/elixir
 RUN yum clean all
 
 # phoenix.ezを転送
-ADD ./src/phoenix_new-1.1.4.ez /phoenix_new-1.1.4.ez
+#ADD ./src/phoenix_new-1.2.1.ez /phoenix_new.ez
 
 ADD ./scripts/run.sh /run.sh
 ADD ./scripts/init.sh /init.sh
