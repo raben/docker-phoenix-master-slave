@@ -4,10 +4,15 @@ MAINTAINER rabe_ame rabe.ame@gmail.com
 # リポジトリを追加
 ADD ./configs/etc/yum.repos.d/mariadb.repo /etc/yum.repos.d/mariadb.repo
 
-
 # 必要なパッケージをインストール
 RUN yum update -y
-RUN yum install -y tar wget sudo vim-enhanced git gcc gcc-c++ make zlib-devel openssl openssl-devel ncurses-devel MariaDB-devel MariaDB-client patch
+RUN yum install -y tar wget sudo vim-enhanced glibc-common git gcc gcc-c++ make zlib-devel openssl openssl-devel ncurses-devel MariaDB-devel MariaDB-client patch
+
+# locale設定
+ENV LANG=ja_JP.UTF-8
+RUN rm -f /etc/localtime
+RUN ln -fs /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+RUN localedef -f UTF-8 -i ja_JP ja_JP.utf8
 
 # 開発用ユーザーを作成
 RUN useradd -m -s /bin/bash docker
